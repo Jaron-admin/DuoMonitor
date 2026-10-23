@@ -11,17 +11,18 @@ import 'ti_settings_schema.dart';
 import 'ti_settings_strings.dart';
 
 /// Builds the bespoke widget for a [TiSettingBlock].
-typedef TiSettingsBlockBuilder =
-    Widget Function(
-      BuildContext context,
-      TiSettingBlock block,
-      AppConfig config,
-      ValueChanged<AppConfig> onChanged,
-    );
+typedef TiSettingsBlockBuilder = Widget Function(
+  BuildContext context,
+  TiSettingBlock block,
+  AppConfig config,
+  ValueChanged<AppConfig> onChanged,
+);
 
 /// Asks the host for a font family. Returns null when the user cancels.
-typedef TiFontPicker =
-    Future<String?> Function(TiSettingSpec spec, String current);
+typedef TiFontPicker = Future<String?> Function(
+  TiSettingSpec spec,
+  String current,
+);
 
 /// Renders a declared settings catalog.
 ///
@@ -78,19 +79,15 @@ class _TiSettingsViewState extends State<TiSettingsView> {
     super.dispose();
   }
 
-  TiSettingsStrings get _strings => TiSettingsStrings(
-    Localizations.localeOf(context).languageCode == 'zh',
-  );
+  TiSettingsStrings get _strings =>
+      TiSettingsStrings(Localizations.localeOf(context).languageCode == 'zh');
 
-  bool get _searching =>
-      widget.showSearch && _query.trim().isNotEmpty;
+  bool get _searching => widget.showSearch && _query.trim().isNotEmpty;
 
   List<TiSettingGroup> get _groups => _searching
       ? widget.catalog.search(_query)
       : widget.catalog
-            .orderedGroups(
-              where: (group) => group.visibleIn(widget.config),
-            )
+            .orderedGroups(where: (group) => group.visibleIn(widget.config))
             .toList();
 
   bool _expandedFor(TiSettingGroup group) {
@@ -125,8 +122,7 @@ class _TiSettingsViewState extends State<TiSettingsView> {
               : ListView(
                   padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
                   children: [
-                    for (final group in groups)
-                      _groupCard(strings, group),
+                    for (final group in groups) _groupCard(strings, group),
                   ],
                 ),
         ),
@@ -172,26 +168,27 @@ class _TiSettingsViewState extends State<TiSettingsView> {
     ),
   );
 
-  Widget _menu(TiSettingsStrings strings, int changed) => PopupMenuButton<String>(
-    tooltip: strings.more,
-    icon: const Icon(Icons.more_vert_rounded, size: 20),
-    onSelected: (value) => switch (value) {
-      'reset' => _resetAll(strings),
-      'export' => _export(strings),
-      'import' => _import(strings),
-      _ => null,
-    },
-    itemBuilder: (context) => [
-      PopupMenuItem(
-        value: 'reset',
-        enabled: changed > 0,
-        child: Text(strings.resetAll),
-      ),
-      const PopupMenuDivider(),
-      PopupMenuItem(value: 'export', child: Text(strings.exportJson)),
-      PopupMenuItem(value: 'import', child: Text(strings.importJson)),
-    ],
-  );
+  Widget _menu(TiSettingsStrings strings, int changed) =>
+      PopupMenuButton<String>(
+        tooltip: strings.more,
+        icon: const Icon(Icons.more_vert_rounded, size: 20),
+        onSelected: (value) => switch (value) {
+          'reset' => _resetAll(strings),
+          'export' => _export(strings),
+          'import' => _import(strings),
+          _ => null,
+        },
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 'reset',
+            enabled: changed > 0,
+            child: Text(strings.resetAll),
+          ),
+          const PopupMenuDivider(),
+          PopupMenuItem(value: 'export', child: Text(strings.exportJson)),
+          PopupMenuItem(value: 'import', child: Text(strings.importJson)),
+        ],
+      );
 
   Widget _restartBanner(TiSettingsStrings strings, int count) => Container(
     margin: const EdgeInsets.only(bottom: 8),
@@ -239,8 +236,7 @@ class _TiSettingsViewState extends State<TiSettingsView> {
   Widget _groupCard(TiSettingsStrings strings, TiSettingGroup group) {
     final expanded = _expandedFor(group);
     final modified = group.modifiedCount(widget.config);
-    final showBadge =
-        group.level != TiSettingLevel.common && !_searching;
+    final showBadge = group.level != TiSettingLevel.common && !_searching;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -285,9 +281,9 @@ class _TiSettingsViewState extends State<TiSettingsView> {
                               style: TextStyle(
                                 fontSize: 12,
                                 height: 1.4,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -460,9 +456,8 @@ class _TiSettingsViewState extends State<TiSettingsView> {
               ButtonSegment(value: option.value, label: Text(option.label)),
           ],
           selected: {current},
-          onSelectionChanged: (selection) => widget.onChanged(
-            spec.write(widget.config, selection.single),
-          ),
+          onSelectionChanged: (selection) =>
+              widget.onChanged(spec.write(widget.config, selection.single)),
         );
 
       case TiSettingType.select:
@@ -527,8 +522,10 @@ class _TiSettingsViewState extends State<TiSettingsView> {
               onPressed: () => widget.onChanged(
                 spec.write(
                   widget.config,
-                  (numeric - step).clamp(spec.min ?? double.negativeInfinity,
-                      spec.max ?? double.infinity),
+                  (numeric - step).clamp(
+                    spec.min ?? double.negativeInfinity,
+                    spec.max ?? double.infinity,
+                  ),
                 ),
               ),
               icon: const Icon(Icons.remove_rounded),
@@ -550,8 +547,10 @@ class _TiSettingsViewState extends State<TiSettingsView> {
               onPressed: () => widget.onChanged(
                 spec.write(
                   widget.config,
-                  (numeric + step).clamp(spec.min ?? double.negativeInfinity,
-                      spec.max ?? double.infinity),
+                  (numeric + step).clamp(
+                    spec.min ?? double.negativeInfinity,
+                    spec.max ?? double.infinity,
+                  ),
                 ),
               ),
               icon: const Icon(Icons.add_rounded),
@@ -684,11 +683,7 @@ class _TiSettingsViewState extends State<TiSettingsView> {
 }
 
 class _TiTextField extends StatefulWidget {
-  const _TiTextField({
-    super.key,
-    required this.value,
-    required this.onChanged,
-  });
+  const _TiTextField({super.key, required this.value, required this.onChanged});
 
   final String value;
   final ValueChanged<String> onChanged;

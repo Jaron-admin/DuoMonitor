@@ -6,7 +6,7 @@
 
 ## 环境与构建
 
-构建使用 Flutter 3.47.5 / Dart 3.13.4、Windows 10/11 x64，以及 Visual Studio 的 C++ 桌面工具、MSVC、CMake 和 Windows SDK。按 [Flutter Windows 配置文档](https://docs.flutter.dev/platform-integration/windows/setup)准备工具链。
+构建使用 Flutter 3.47.7 / Dart 3.13.4、Windows 10/11 x64，以及 Visual Studio 的 C++ 桌面工具、MSVC、CMake 和 Windows SDK。低于 3.47 的 Flutter 会因框架内部 API 变更导致编译失败，换机器时先确认版本。按 [Flutter Windows 配置文档](https://docs.flutter.dev/platform-integration/windows/setup)准备工具链。
 
 ```powershell
 git clone https://github.com/Jaron-admin/DuoMonitor.git

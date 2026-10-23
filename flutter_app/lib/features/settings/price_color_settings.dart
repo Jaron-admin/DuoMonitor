@@ -43,7 +43,9 @@ class PriceColorSettings extends StatelessWidget {
             ),
           ],
           onChanged: (value) {
-            if (value != null) onChanged(config.copyWith(priceColorMode: value));
+            if (value != null) {
+              onChanged(config.copyWith(priceColorMode: value));
+            }
           },
         ),
         const SizedBox(height: 8),

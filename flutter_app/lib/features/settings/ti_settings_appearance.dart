@@ -2,6 +2,43 @@ import '../../domain/models.dart';
 import '../../l10n/l10n.dart';
 import 'ti_settings_schema.dart';
 
+/// Settings that apply to every display, so they are declared once and are not
+/// scoped to a target. They live in the "general" group of the fixed order.
+TiSettingsCatalog buildGeneralCatalog(AppLocalizations l10n) {
+  final zh = l10n.localeName.startsWith('zh');
+  String t(String cn, String en) => zh ? cn : en;
+
+  return TiSettingsCatalog(
+    groups: [
+      TiSettingGroup(
+        id: 'general.language',
+        section: TiSettingSection.general,
+        title: t('语言', 'Language'),
+        description: t('两个显示位置共用同一个语言。', 'Both displays share one language.'),
+        items: [
+          TiSettingSpec.choice(
+            key: 'general.language',
+            anchor: 'language',
+            label: t('界面语言', 'Language'),
+            hint: t(
+              '跟随系统，或固定成某一种语言。',
+              'Follow the system or pin one language.',
+            ),
+            defaultValue: 'system',
+            options: [
+              TiSettingOption('system', t('跟随系统', 'System')),
+              const TiSettingOption('zh', '简体中文'),
+              const TiSettingOption('en', 'English'),
+            ],
+            read: (config) => config.language,
+            write: (config, value) => config.copyWith(language: value),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 /// Declared appearance settings.
 ///
 /// This is the whole page for the appearance section: labels, hints, defaults,
@@ -21,27 +58,6 @@ TiSettingsCatalog buildAppearanceCatalog(
   return TiSettingsCatalog(
     groups: [
       TiSettingGroup(
-        id: 'general.language',
-        section: TiSettingSection.general,
-        title: t('语言', 'Language'),
-        items: [
-          TiSettingSpec.choice(
-            key: 'general.language',
-            anchor: 'language',
-            label: t('界面语言', 'Language'),
-            hint: t('跟随系统，或固定成某一种语言。', 'Follow the system or pin one language.'),
-            defaultValue: 'system',
-            options: [
-              TiSettingOption('system', t('跟随系统', 'System')),
-              const TiSettingOption('zh', '简体中文'),
-              const TiSettingOption('en', 'English'),
-            ],
-            read: (config) => config.language,
-            write: (config, value) => config.copyWith(language: value),
-          ),
-        ],
-      ),
-      TiSettingGroup(
         id: 'appearance.theme',
         section: TiSettingSection.appearance,
         title: t('主题', 'Theme'),
@@ -54,6 +70,22 @@ TiSettingsCatalog buildAppearanceCatalog(
             id: 'appearance.theme-picker',
             title: 'Theme picker',
             anchor: 'themes',
+          ),
+        ],
+      ),
+      TiSettingGroup(
+        id: 'appearance.layout',
+        section: TiSettingSection.appearance,
+        title: t('布局', 'Layout'),
+        description: t(
+          '列数、排列方向和间距。只改排布，不改显示什么。',
+          'Columns, direction and gaps. Arrangement only, not content.',
+        ),
+        items: [
+          const TiSettingBlock(
+            id: 'appearance.layout',
+            title: 'Panel layout',
+            anchor: 'panel-layout',
           ),
         ],
       ),
@@ -82,7 +114,10 @@ TiSettingsCatalog buildAppearanceCatalog(
           TiSettingSpec.range(
             key: 'appearance.rowSpacing',
             label: t('行距', 'Row spacing'),
-            hint: t('行与行之间的空隙，0 会挤在一起。', 'Gap between rows. Zero stacks them tight.'),
+            hint: t(
+              '行与行之间的空隙，0 会挤在一起。',
+              'Gap between rows. Zero stacks them tight.',
+            ),
             min: 0,
             max: 24,
             step: 1,
@@ -150,10 +185,7 @@ TiSettingsCatalog buildAppearanceCatalog(
               key: 'appearance.transparency',
               anchor: 'opacity',
               label: t('透明度', 'Transparency'),
-              hint: t(
-                '越高越透明，能看见背后的窗口。',
-                'Higher means more see-through.',
-              ),
+              hint: t('越高越透明，能看见背后的窗口。', 'Higher means more see-through.'),
               min: 0,
               max: 60,
               step: 1,

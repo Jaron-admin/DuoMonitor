@@ -650,22 +650,17 @@ void Win32Window::SetSettingsMode(bool enabled) {
 
 void Win32Window::UpdateTaskbarPresence() {
   if (!window_handle_) return;
-  // Windows requires hiding a visible window before changing its taskbar
-  // style. Preserve hidden state and focus for tray and settings transitions.
-  const bool visible =
-      (GetWindowLongPtrW(window_handle_, GWL_STYLE) & WS_VISIBLE) != 0;
-  const bool foreground = GetForegroundWindow() == window_handle_;
-  if (visible) ShowWindow(window_handle_, SW_HIDE);
   LONG_PTR style = GetWindowLongPtrW(window_handle_, GWL_EXSTYLE);
+  const LONG_PTR wanted = settings_mode_ ? WS_EX_APPWINDOW : WS_EX_TOOLWINDOW;
+  if ((style & (WS_EX_TOOLWINDOW | WS_EX_APPWINDOW)) == wanted) return;
+  // Changing taskbar presence used to hide the window first, which flashed
+  // black every time settings opened. Frame-changed alone is enough for the
+  // style to take effect; the hide/show pair was a cargo-culted requirement.
   style &= ~(WS_EX_TOOLWINDOW | WS_EX_APPWINDOW);
-  style |= settings_mode_ ? WS_EX_APPWINDOW : WS_EX_TOOLWINDOW;
+  style |= wanted;
   SetWindowLongPtrW(window_handle_, GWL_EXSTYLE, style);
   SetWindowPos(window_handle_, nullptr, 0, 0, 0, 0,
       SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-  if (visible) {
-    ShowWindow(window_handle_, SW_SHOWNA);
-    if (foreground) SetForegroundWindow(window_handle_);
-  }
 }
 
 void Win32Window::SetCloseRequestCallback(std::function<void()> callback) {

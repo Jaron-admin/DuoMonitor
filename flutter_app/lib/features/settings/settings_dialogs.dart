@@ -193,8 +193,7 @@ class _FontDialogState extends State<_FontDialog> {
                               widget.highlightMonospace &&
                                   isMonospaceFontFamily(fonts[index])
                               ? Text(context.l10n.settingMonospaceFont)
-                              : snapshot.connectionState ==
-                                    ConnectionState.done
+                              : snapshot.connectionState == ConnectionState.done
                               ? null
                               : const SizedBox(
                                   width: 14,

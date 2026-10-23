@@ -22,12 +22,14 @@ class TiSettingsStrings {
   String get confirm => chinese ? '恢复默认' : 'Reset';
   String get exportJson => chinese ? '导出设置' : 'Export settings';
   String get importJson => chinese ? '导入设置' : 'Import settings';
-  String get exportEmpty =>
-      chinese ? '还没有改过任何设置，导出的文件是空的。' : 'Nothing changed yet, so the export is empty.';
+  String get exportEmpty => chinese
+      ? '还没有改过任何设置，导出的文件是空的。'
+      : 'Nothing changed yet, so the export is empty.';
   String get exportDone => chinese ? '已导出' : 'Exported';
   String get importDone => chinese ? '已恢复' : 'Restored';
   String get importSkipped => chinese ? '跳过' : 'Skipped';
-  String get importFailed => chinese ? '这个文件读不出设置。' : 'That file does not contain settings.';
+  String get importFailed =>
+      chinese ? '这个文件读不出设置。' : 'That file does not contain settings.';
   String get advanced => chinese ? '高级' : 'Advanced';
   String get experimental => chinese ? '实验' : 'Experimental';
   String get needsRestart => chinese ? '需重启生效' : 'needs a restart';
